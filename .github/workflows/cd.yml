@@ -147,7 +147,7 @@ jobs:
       - name: Install llvm
         run: |
           set -x
-          choco install -y llvm --version=11.0.1
+          choco install -y llvm --version=11.0.1 --allow-downgrade 
           echo "LIBCLANG_PATH=C:\Program Files\LLVM\lib" >> $GITHUB_ENV
         shell: bash
       - name: Build
