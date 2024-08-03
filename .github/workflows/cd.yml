@@ -155,6 +155,7 @@ jobs:
         shell: bash
         env:
           GNU: "true"
+          TARGET: ""
       # Upload (same for each build)
       - name: Upload
         uses: actions/upload-artifact@v3
