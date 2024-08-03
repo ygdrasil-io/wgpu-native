@@ -135,8 +135,6 @@ jobs:
       - name: Set WGPU_NATIVE_VERSION
         run: echo "WGPU_NATIVE_VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
         shell: bash
-      - name: Install stable Rust toolchain
-        run: rustup toolchain add stable --profile minimal
       - name: Install GNU Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
