@@ -52,7 +52,7 @@ package: lib-native lib-native-release
 		rm -f dist/$$ARCHIVE; \
 		if [ $(OS_NAME) = windows ]; then \
 			if [ $(GNU) = true ]; then \
-				7z a -tzip dist/$$ARCHIVE ./$$LIBDIR/wgpu_native.dll ./$$LIBDIR/wgpu_native.dll.a ./$$LIBDIR/wgpu_native.pdb ./$$LIBDIR/wgpu_native.a ./ffi/webgpu-headers/*.h ./ffi/wgpu.h ./dist/commit-sha; \
+				7z a -tzip dist/$$ARCHIVE ./$$LIBDIR/wgpu_native.dll ./$$LIBDIR/libwgpu_native.dll.a ./$$LIBDIR/libwgpu_native.a ./ffi/webgpu-headers/*.h ./ffi/wgpu.h ./dist/commit-sha; \
 			else \
 				7z a -tzip dist/$$ARCHIVE ./$$LIBDIR/wgpu_native.dll ./$$LIBDIR/wgpu_native.dll.lib ./$$LIBDIR/wgpu_native.pdb ./$$LIBDIR/wgpu_native.lib ./ffi/webgpu-headers/*.h ./ffi/wgpu.h ./dist/commit-sha; \
 			fi; \
