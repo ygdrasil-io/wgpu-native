@@ -140,7 +140,7 @@ jobs:
       - name: Install GNU Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable-msvc
+          toolchain: stable-gnu
           targets: ${{ env.TARGET }}
       - name: Setup caching
         uses: Swatinem/rust-cache@v2
