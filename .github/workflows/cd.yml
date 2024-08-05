@@ -137,8 +137,6 @@ jobs:
         shell: bash
       - name: Install GNU Rust toolchain
         run: rustup toolchain install stable-${{ env.TARGET }}
-      - name: Switch to GNU Rust toolchain
-        run: rustup default ${{ env.TARGET }}
       - name: Setup caching
         uses: Swatinem/rust-cache@v2
         with:
