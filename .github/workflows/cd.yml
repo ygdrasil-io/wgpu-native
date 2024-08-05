@@ -125,7 +125,7 @@ jobs:
     name: release - windows-x86_64 - GNU
     runs-on: windows-latest
     env:
-      TARGET: stable-x86_64-pc-windows-gnu
+      TARGET: x86_64-pc-windows-gnu
       ARCHIVE_NAME: wgpu-windows-x86_64-gnu
     steps:
       # Common part (same for each build)
@@ -136,7 +136,7 @@ jobs:
         run: echo "WGPU_NATIVE_VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
         shell: bash
       - name: Install GNU Rust toolchain
-        run: rustup toolchain install ${{ env.TARGET }}
+        run: rustup toolchain install stable-${{ env.TARGET }}
       - name: Switch to GNU Rust toolchain
         run: rustup default ${{ env.TARGET }}
       - name: Setup caching
@@ -147,9 +147,8 @@ jobs:
       - name: Install llvm
         run: |
           set -x
-          choco install -y llvm --version=11.0.1 --allow-downgrade 
+          choco install -y llvm
           echo "LIBCLANG_PATH=C:\Program Files\LLVM\lib" >> $GITHUB_ENV
-          rustc --print target-list
         shell: bash
       - name: Build
         run: make package
