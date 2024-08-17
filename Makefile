@@ -28,6 +28,7 @@ else
 endif
 
 MKDIR_CMD:=mkdir -p
+IS_GNU:=$(filter %gnu%,$(TARGET))
 
 ifeq ($(origin MSYSTEM),undefined) # MSYSTEM env var is defined on msys2
 	ifeq ($(OS),Windows_NT)
@@ -51,7 +52,7 @@ package: lib-native lib-native-release
 		LIBDIR=$(TARGET_DIR)/$$RELEASE; \
 		rm -f dist/$$ARCHIVE; \
 		if [ $(OS_NAME) = windows ]; then \
-			if [ $(GNU) = true ]; then \
+			if [ -n "$$IS_GNU" ]; then \
 				7z a -tzip dist/$$ARCHIVE ./$$LIBDIR/wgpu_native.dll ./$$LIBDIR/libwgpu_native.dll.a ./$$LIBDIR/libwgpu_native.a ./ffi/webgpu-headers/*.h ./ffi/wgpu.h ./dist/commit-sha; \
 			else \
 				7z a -tzip dist/$$ARCHIVE ./$$LIBDIR/wgpu_native.dll ./$$LIBDIR/wgpu_native.dll.lib ./$$LIBDIR/wgpu_native.pdb ./$$LIBDIR/wgpu_native.lib ./ffi/webgpu-headers/*.h ./ffi/wgpu.h ./dist/commit-sha; \

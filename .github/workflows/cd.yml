@@ -183,6 +183,7 @@ jobs:
     # Config
     name: release - ${{ matrix.name }}
     runs-on: ubuntu-latest
+    if: ${{ false }}
     strategy:
       fail-fast: true
       matrix:
@@ -237,56 +238,25 @@ jobs:
           name: dist
 
   # -----
-  windows-x86_64-gnu:
+  windows:
     # Config
-    name: release - windows-x86_64 - GNU
+    name: release - ${{ matrix.name }}
     runs-on: windows-latest
-    if: ${{ false }}
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - name:  windows-x86_64 - MSVC
+            target: x86_64-pc-windows-msvc
+            archive-name: windows-x86_64-msvc
+            toolchain: stable-msvc
+          - name:  windows-x86_64 - GNU
+            target: x86_64-pc-windows-gnu
+            archive-name: windows-x86_64-gnu
+            toolchain: stable-gnu
     env:
-      TARGET: x86_64-pc-windows-gnu
-      ARCHIVE_NAME: wgpu-windows-x86_64-gnu
-    steps:
-      # Common part (same for each build)
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-      - name: Set WGPU_NATIVE_VERSION
-        run: echo "WGPU_NATIVE_VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
-        shell: bash
-      - name: Install GNU Rust toolchain
-        run: rustup toolchain install stable-${{ env.TARGET }}
-      - name: Setup caching
-        uses: Swatinem/rust-cache@v2
-        with:
-          key: build-${{ env.TARGET }}-${{ env.CACHE_SUFFIX }}
-      # Build
-      - name: Install llvm
-        run: |
-          set -x
-          choco install -y llvm
-          echo "LIBCLANG_PATH=C:\Program Files\LLVM\lib" >> $GITHUB_ENV
-        shell: bash
-      - name: Build
-        run: make package
-        shell: bash
-        env:
-          GNU: "true"
-      # Upload (same for each build)
-      - name: Upload
-        uses: actions/upload-artifact@v3
-        with:
-          path: dist
-          name: dist
-
-  # -----
-  windows-x86_64-msvc:
-    # Config
-    name: release - windows-x86_64 - MSVC
-    runs-on: windows-latest
-    if: ${{ false }}
-    env:
-      TARGET: x86_64-pc-windows-msvc
-      ARCHIVE_NAME: wgpu-windows-x86_64-msvc
+      TARGET: ${{ matrix.taget }}
+      ARCHIVE_NAME: wgpu-${{ matrix.archive-name }}
     steps:
       # Common part (same for each build)
       - uses: actions/checkout@v4
@@ -298,7 +268,7 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable-msvc
+          toolchain: ${{ matrix.toolchain }}
           targets: ${{ env.TARGET }}
       - name: Setup caching
         uses: Swatinem/rust-cache@v2
@@ -483,8 +453,7 @@ jobs:
       - iOS
       - android
       - linux
-      - windows-x86_64-gnu
-      - windows-x86_64-msvc
+      - windows
       - windows-i686
       - windows-aarch64
       - macos-x86_64
