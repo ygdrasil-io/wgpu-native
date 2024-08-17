@@ -87,7 +87,7 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - name: android-x86
+          - name: android-i686
             target: i686-linux-android
             setup_env: |
               set -x
@@ -242,6 +242,7 @@ jobs:
     # Config
     name: release - ${{ matrix.name }}
     runs-on: windows-latest
+    if: ${{ false }}
     strategy:
       fail-fast: true
       matrix:
@@ -261,6 +262,10 @@ jobs:
           - name:  windows-x86_64 - GNU
             target: x86_64-pc-windows-gnu
             archive-name: windows-x86_64-gnu
+            toolchain: stable-gnu
+          - name:  windows-i686 - GNU
+            target: i686-pc-windows-gnu
+            archive-name: windows-i686-gnu
             toolchain: stable-gnu
     env:
       TARGET: ${{ matrix.target }}
@@ -294,93 +299,23 @@ jobs:
           name: dist
 
   # -----
-  windows-i686:
+  macos:
     # Config
-    name: release - windows-i686
-    runs-on: windows-latest
-    if: ${{ false }}
-    env:
-      TARGET: i686-pc-windows-msvc
-      ARCHIVE_NAME: wgpu-windows-i686
-    steps:
-      # Common part (same for each build)
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-      - name: Set WGPU_NATIVE_VERSION
-        run: echo "WGPU_NATIVE_VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
-        shell: bash
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          toolchain: stable-i686-pc-windows-msvc
-          targets: ${{ env.TARGET }}
-      - name: Setup caching
-        uses: Swatinem/rust-cache@v2
-        with:
-          key: build-${{ env.TARGET }}-${{ env.CACHE_SUFFIX }}
-      # Build
-      - name: Install llvm
-        run: |
-          set -x
-          choco install -y --x86 --force llvm
-          echo "LIBCLANG_PATH=C:\Program Files (x86)\LLVM\lib" >> $GITHUB_ENV
-        shell: bash
-      - name: Build
-        run: make package
-        shell: bash
-      # Upload (same for each build)
-      - name: Upload
-        uses: actions/upload-artifact@v3
-        with:
-          path: dist
-          name: dist
-
-  # -----
-  windows-aarch64:
-    # Config
-    name: release - windows-aarch64
-    runs-on: windows-latest
-    if: ${{ false }}
-    env:
-      TARGET: aarch64-pc-windows-msvc
-      ARCHIVE_NAME: wgpu-windows-aarch64
-    steps:
-      # Common part (same for each build)
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-      - name: Set WGPU_NATIVE_VERSION
-        run: echo "WGPU_NATIVE_VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
-        shell: bash
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ env.TARGET }}
-      - name: Setup caching
-        uses: Swatinem/rust-cache@v2
-        with:
-          key: build-${{ env.TARGET }}-${{ env.CACHE_SUFFIX }}
-      # Build
-      - name: Build
-        run: make package
-        shell: bash
-      # Upload (same for each build)
-      - name: Upload
-        uses: actions/upload-artifact@v3
-        with:
-          path: dist
-          name: dist
-
-  # -----
-  macos-x86_64:
-    # Config
-    name: release - macos-x86_64
+    name: release - ${{ matrix.name }}
     runs-on: macos-latest
-    if: ${{ false }}
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - name:  macos-x86_64
+            target: x86_64-apple-darwin
+            archive-name: macos-x86_64
+          - name:  macos-aarch64
+            target: aarch64-apple-darwin
+            archive-name: aarch64-i686
     env:
-      TARGET: x86_64-apple-darwin
-      ARCHIVE_NAME: wgpu-macos-x86_64
+      TARGET: ${{ matrix.target }}
+      ARCHIVE_NAME: wgpu-${{ matrix.archive-name }}
       MACOSX_DEPLOYMENT_TARGET: "10.13"
       RUSTFLAGS: "-C link-args=-Wl,-install_name,@rpath/libwgpu_native.dylib"
     steps:
@@ -456,10 +391,7 @@ jobs:
       - android
       - linux
       - windows
-      - windows-i686
-      - windows-aarch64
-      - macos-x86_64
-      - macos-aarch64
+      - macos
     runs-on: ubuntu-latest
     if: success() && contains(github.ref, 'tags/v')
     steps:
