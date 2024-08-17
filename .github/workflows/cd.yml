@@ -259,10 +259,6 @@ jobs:
             target: x86_64-pc-windows-gnu
             archive-name: windows-x86_64-gnu
             toolchain: stable-gnu
-          - name:  windows-i686 - GNU
-            target: i686-pc-windows-gnu
-            archive-name: windows-i686-gnu
-            toolchain: stable-gnu
     env:
       TARGET: ${{ matrix.target }}
       ARCHIVE_NAME: wgpu-${{ matrix.archive-name }}
