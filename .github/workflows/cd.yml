@@ -344,10 +344,10 @@ jobs:
     name: Publish Github release
     needs:
       - iOS
-      - android
-      - linux
-      - windows
-      - macos
+      #- android
+      #- linux
+      #- windows
+      #- macos
     runs-on: ubuntu-latest
     if: success() && contains(github.ref, 'tags/v')
     steps:
@@ -357,9 +357,8 @@ jobs:
           echo "WGPU_NATIVE_VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
         shell: bash
       - name: Download assets
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          name: dist
           path: dist
       - name: Create commit-sha file
         env:
