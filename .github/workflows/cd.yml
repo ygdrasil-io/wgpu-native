@@ -46,6 +46,10 @@ jobs:
             target: aarch64-apple-ios-sim
           - name: iOS-x86_64-simulator
             target: x86_64-apple-ios
+
+    env:
+      TARGET: ${{ matrix.target }}
+      ARCHIVE_NAME: wgpu-${{ matrix.name }}
     steps:
       # Common part (same for each build)
       - uses: actions/checkout@v4
@@ -67,9 +71,6 @@ jobs:
       # Build
       - name: Build
         run: make package
-        env:
-          TARGET: ${{ matrix.target }}
-          ARCHIVE_NAME: wgpu-${{ matrix.name }}
       # Upload (same for each build)
       - name: Upload
         uses: actions/upload-artifact@v4
@@ -145,6 +146,9 @@ jobs:
               echo "LIBCLANG_PATH=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/lib64/libclang.so.13" >> $GITHUB_ENV
               echo "LLVM_CONFIG_PATH=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-config" >> $GITHUB_ENV
               echo "BINDGEN_EXTRA_CLANG_ARGS='-isysroot $ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/sysroot'" >> $GITHUB_ENV
+    env:
+      TARGET: ${{ matrix.target }}
+      ARCHIVE_NAME: wgpu-${{ matrix.name }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -166,9 +170,6 @@ jobs:
       - name: Build
         run: make package
         shell: bash
-        env:
-          TARGET: ${{ matrix.target }}
-          ARCHIVE_NAME: wgpu-${{ matrix.name }}
       # Upload (same for each build)
       - name: Upload
         uses: actions/upload-artifact@v4
