@@ -193,7 +193,6 @@ jobs:
           - name: linux-aarch64
             target: aarch64-unknown-linux-gnu
             image: manylinux_2_28_aarch64
-    if: ${{ false }}
     env:
       TARGET: ${{ matrix.target }}
       ARCHIVE_NAME: wgpu-${{ matrix.name }}
@@ -236,6 +235,7 @@ jobs:
     # Config
     name: release - windows-x86_64 - GNU
     runs-on: windows-latest
+    if: ${{ false }}
     env:
       TARGET: x86_64-pc-windows-gnu
       ARCHIVE_NAME: wgpu-windows-x86_64-gnu
