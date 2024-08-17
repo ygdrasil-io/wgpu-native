@@ -32,9 +32,54 @@ on:
 jobs:
 
   # -----
+  iOS:
+    # Config
+    name: release - ${{ matrix.name }}
+    runs-on: macos-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - name: iOS-aarch64
+            target: aarch64-apple-ios
+          - name: iOS-aarch64-simulator
+            target: aarch64-apple-ios-sim
+          - name: iOS-x86_64-simulator
+            target: x86_64-apple-ios
+    steps:
+      # Common part (same for each build)
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Set WGPU_NATIVE_VERSION
+        run: echo "WGPU_NATIVE_VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
+        shell: bash
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ env.TARGET }}
+      - name: Setup caching
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: build-${{ env.TARGET }}-${{ env.CACHE_SUFFIX }}
+      # Build
+      - name: Build
+        run: make package
+        env:
+          TARGET: ${{ matrix.target }}
+          ARCHIVE_NAME: wgpu-${{ matrix.name }}
+      # Upload (same for each build)
+      - name: Upload
+        uses: actions/upload-artifact@v3
+        with:
+          path: dist
+          name: dist
+
+  # -----
   android:
     name: release - ${{ matrix.name }}
     runs-on: ubuntu-latest
+    if: ${{ false }}
     strategy:
       fail-fast: true
       matrix:
@@ -423,14 +468,15 @@ jobs:
   publish:
     name: Publish Github release
     needs:
+      - iOS
       - android
-      #- linux-x86_64
-      #- linux-aarch64
-      #- windows-x86_64
-      #- windows-i686
-      #- windows-aarch64
-      #- macos-x86_64
-      #- macos-aarch64
+      - linux-x86_64
+      - linux-aarch64
+      - windows-x86_64
+      - windows-i686
+      - windows-aarch64
+      - macos-x86_64
+      - macos-aarch64
     runs-on: ubuntu-latest
     if: success() && contains(github.ref, 'tags/v')
     steps:
