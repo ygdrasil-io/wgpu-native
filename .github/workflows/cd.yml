@@ -79,11 +79,13 @@ jobs:
         with:
           path: dist
           name: dist
+
   # -----
   linux-x86_64:
     # Config
     name: release - linux-x86_64
     runs-on: ubuntu-latest
+    if: ${{ false }}
     env:
       TARGET: x86_64-unknown-linux-gnu
       ARCHIVE_NAME: wgpu-linux-x86_64
@@ -126,6 +128,7 @@ jobs:
     # Config
     name: release - linux-aarch64
     runs-on: ubuntu-latest
+    if: ${{ false }}
     env:
       TARGET: aarch64-unknown-linux-gnu
       ARCHIVE_NAME: wgpu-linux-aarch64
@@ -173,6 +176,7 @@ jobs:
     # Config
     name: release - windows-x86_64
     runs-on: windows-latest
+    if: ${{ false }}
     env:
       TARGET: x86_64-pc-windows-msvc
       ARCHIVE_NAME: wgpu-windows-x86_64
@@ -215,6 +219,7 @@ jobs:
     # Config
     name: release - windows-i686
     runs-on: windows-latest
+    if: ${{ false }}
     env:
       TARGET: i686-pc-windows-msvc
       ARCHIVE_NAME: wgpu-windows-i686
@@ -257,6 +262,7 @@ jobs:
     # Config
     name: release - windows-aarch64
     runs-on: windows-latest
+    if: ${{ false }}
     env:
       TARGET: aarch64-pc-windows-msvc
       ARCHIVE_NAME: wgpu-windows-aarch64
@@ -292,6 +298,7 @@ jobs:
     # Config
     name: release - macos-x86_64
     runs-on: macos-latest
+    if: ${{ false }}
     env:
       TARGET: x86_64-apple-darwin
       ARCHIVE_NAME: wgpu-macos-x86_64
@@ -328,6 +335,7 @@ jobs:
     # Config
     name: release - macos-aarch64
     runs-on: macos-14
+    if: ${{ false }}
     env:
       TARGET: aarch64-apple-darwin
       ARCHIVE_NAME: wgpu-macos-aarch64
@@ -365,13 +373,14 @@ jobs:
   publish:
     name: Publish Github release
     needs:
-      - linux-x86_64
-      - linux-aarch64
-      - windows-x86_64
-      - windows-i686
-      - windows-aarch64
-      - macos-x86_64
-      - macos-aarch64
+      - android
+      #- linux-x86_64
+      #- linux-aarch64
+      #- windows-x86_64
+      #- windows-i686
+      #- windows-aarch64
+      #- macos-x86_64
+      #- macos-aarch64
     runs-on: ubuntu-latest
     if: success() && contains(github.ref, 'tags/v')
     steps:
