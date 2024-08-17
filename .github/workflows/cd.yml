@@ -57,13 +57,11 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable
-      - name: Add iOS targets
-        run: rustup target add ${{ env.TARGET }}
+          toolchain: ${{ matrix.TARGET }}
       - name: Setup caching
         uses: Swatinem/rust-cache@v2
         with:
-          key: build-${{ env.TARGET }}-${{ env.CACHE_SUFFIX }}
+          key: build-${{ matrix.TARGET }}-${{ matrix.CACHE_SUFFIX }}
       # Build
       - name: Build
         run: make package
@@ -161,7 +159,7 @@ jobs:
       - name: Setup caching
         uses: Swatinem/rust-cache@v2
         with:
-          key: build-${{ env.TARGET }}-${{ env.CACHE_SUFFIX }}
+          key: build-${{ matrix.TARGET }}-${{ matrix.CACHE_SUFFIX }}
       - name: Setup Environment
         run: ${{ matrix.setup_env }}
       - name: Build
