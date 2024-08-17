@@ -343,10 +343,10 @@ jobs:
     name: Publish Github release
     needs:
       - iOS
-      #- android
-      #- linux
-      #- windows
-      #- macos
+      - android
+      - linux
+      - windows
+      - macos
     runs-on: ubuntu-latest
     if: success() && contains(github.ref, 'tags/v')
     steps:
