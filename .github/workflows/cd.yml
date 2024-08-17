@@ -36,7 +36,6 @@ jobs:
     # Config
     name: release - ${{ matrix.name }}
     runs-on: macos-latest
-    if: ${{ false }}
     strategy:
       fail-fast: true
       matrix:
@@ -82,7 +81,6 @@ jobs:
   android:
     name: release - ${{ matrix.name }}
     runs-on: ubuntu-latest
-    if: ${{ false }}
     strategy:
       fail-fast: true
       matrix:
@@ -183,7 +181,6 @@ jobs:
     # Config
     name: release - ${{ matrix.name }}
     runs-on: ubuntu-latest
-    if: ${{ false }}
     strategy:
       fail-fast: true
       matrix:
@@ -242,7 +239,6 @@ jobs:
     # Config
     name: release - ${{ matrix.name }}
     runs-on: windows-latest
-    if: ${{ false }}
     strategy:
       fail-fast: true
       matrix:
@@ -317,43 +313,6 @@ jobs:
       TARGET: ${{ matrix.target }}
       ARCHIVE_NAME: wgpu-${{ matrix.archive-name }}
       MACOSX_DEPLOYMENT_TARGET: "10.13"
-      RUSTFLAGS: "-C link-args=-Wl,-install_name,@rpath/libwgpu_native.dylib"
-    steps:
-      # Common part (same for each build)
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-      - name: Set WGPU_NATIVE_VERSION
-        run: echo "WGPU_NATIVE_VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
-        shell: bash
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ env.TARGET }}
-      - name: Setup caching
-        uses: Swatinem/rust-cache@v2
-        with:
-          key: build-${{ env.TARGET }}-${{ env.CACHE_SUFFIX }}
-      # Build
-      - name: Build
-        run: make package
-      # Upload (same for each build)
-      - name: Upload
-        uses: actions/upload-artifact@v3
-        with:
-          path: dist
-          name: dist
-
-  # -----
-  macos-aarch64:
-    # Config
-    name: release - macos-aarch64
-    runs-on: macos-14
-    if: ${{ false }}
-    env:
-      TARGET: aarch64-apple-darwin
-      ARCHIVE_NAME: wgpu-macos-aarch64
-      MACOSX_DEPLOYMENT_TARGET: "11.0"
       RUSTFLAGS: "-C link-args=-Wl,-install_name,@rpath/libwgpu_native.dylib"
     steps:
       # Common part (same for each build)
