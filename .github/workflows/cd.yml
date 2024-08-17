@@ -39,8 +39,34 @@ jobs:
         include:
           - name: android-aarch64
             target: aarch64-linux-android
+            setup_env: |
+              set -x
+              ANDROID_NDK_HOME=$ANDROID_HOME/ndk/25.2.9519653
+              CC=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang
+
+              echo "CC=$CC" >> $GITHUB_ENV
+              echo "CXX=$CC++" >> $GITHUB_ENV
+              echo "CLANG_PATH=$CC" >> $GITHUB_ENV
+              echo "CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER=$CC" >> $GITHUB_ENV
+
+              echo "LIBCLANG_PATH=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/lib64/libclang.so.13" >> $GITHUB_ENV
+              echo "LLVM_CONFIG_PATH=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-config" >> $GITHUB_ENV
+              echo "BINDGEN_EXTRA_CLANG_ARGS='-isysroot $ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/sysroot'" >> $GITHUB_ENV
           - name: android-armv7
             target: armv7-linux-androideabi
+            setup_env: |
+              set -x
+              ANDROID_NDK_HOME=$ANDROID_HOME/ndk/25.2.9519653
+              CC=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi21-clang
+
+              echo "CC=$CC" >> $GITHUB_ENV
+              echo "CXX=$CC++" >> $GITHUB_ENV
+              echo "CLANG_PATH=$CC" >> $GITHUB_ENV
+              echo "CARGO_TARGET_ARMV7_LINUX_ANDROIDEABI_LINKER=$CC" >> $GITHUB_ENV
+
+              echo "LIBCLANG_PATH=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/lib64/libclang.so.13" >> $GITHUB_ENV
+              echo "LLVM_CONFIG_PATH=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-config" >> $GITHUB_ENV
+              echo "BINDGEN_EXTRA_CLANG_ARGS='-isysroot $ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/sysroot'" >> $GITHUB_ENV
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -56,20 +82,9 @@ jobs:
       - name: Setup caching
         uses: Swatinem/rust-cache@v2
         with:
-          key: clippy-${{ matrix.target }}-${{ env.CACHE_SUFFIX }}
+          key: build-${{ env.TARGET }}-${{ env.CACHE_SUFFIX }}
       - name: Setup Environment
-        run: |
-          set -x
-          ANDROID_NDK_HOME=$ANDROID_HOME/ndk/25.2.9519653
-          CC=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi21-clang
-          
-          echo "CC=$CC" >> $GITHUB_ENV
-          echo "CXX=$CC++" >> $GITHUB_ENV
-          echo "CLANG_PATH=$CC" >> $GITHUB_ENV
-          
-          echo "LIBCLANG_PATH=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/lib64/libclang.so.13" >> $GITHUB_ENV
-          echo "LLVM_CONFIG_PATH=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-config" >> $GITHUB_ENV
-          echo "BINDGEN_EXTRA_CLANG_ARGS='-isysroot $ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/sysroot'" >> $GITHUB_ENV
+        run: ${{ matrix.setup_env }}
       - name: Build
         run: make package
         shell: bash
