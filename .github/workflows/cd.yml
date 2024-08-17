@@ -250,6 +250,14 @@ jobs:
             target: x86_64-pc-windows-msvc
             archive-name: windows-x86_64-msvc
             toolchain: stable-msvc
+          - name:  windows-i686 - MSVC
+            target: i686-pc-windows-msvc
+            archive-name: windows-i686-msvc
+            toolchain: stable-msvc
+          - name:  windows-aarch64 - MSVC
+            target: aarch64-pc-windows-msvc
+            archive-name: windows-aarch64-msvc
+            toolchain: stable-msvc
           - name:  windows-x86_64 - GNU
             target: x86_64-pc-windows-gnu
             archive-name: windows-x86_64-gnu
