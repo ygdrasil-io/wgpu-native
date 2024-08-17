@@ -30,6 +30,55 @@ on:
     branches: [trunk, cd]
 
 jobs:
+  android:
+    name: release - ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - name: android-aarch64
+            target: aarch64-linux-android
+          - name: android-armv7
+            target: armv7-linux-androideabi
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Set WGPU_NATIVE_VERSION
+        run: echo "WGPU_NATIVE_VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
+        shell: bash
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          target: ${{ matrix.target }}
+      - name: Setup caching
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: clippy-${{ matrix.target }}-${{ env.CACHE_SUFFIX }}
+      - name: Setup Environment
+        run: |
+          set -x
+          ANDROID_NDK_HOME=$ANDROID_HOME/ndk/25.2.9519653
+          CC=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi21-clang
+          
+          echo "CC=$CC" >> $GITHUB_ENV
+          echo "CXX=$CC++" >> $GITHUB_ENV
+          echo "CLANG_PATH=$CC" >> $GITHUB_ENV
+          
+          echo "LIBCLANG_PATH=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/lib64/libclang.so.13" >> $GITHUB_ENV
+          echo "LLVM_CONFIG_PATH=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-config" >> $GITHUB_ENV
+          echo "BINDGEN_EXTRA_CLANG_ARGS='-isysroot $ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/sysroot'" >> $GITHUB_ENV
+      - name: Build
+        run: make package
+        shell: bash
+      # Upload (same for each build)
+      - name: Upload
+        uses: actions/upload-artifact@v3
+        with:
+          path: dist
+          name: dist
   # -----
   linux-x86_64:
     # Config
