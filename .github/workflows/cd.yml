@@ -75,7 +75,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           path: dist
-          name: dist
+          name: ${{ env.ARCHIVE_NAME }}
 
   # -----
   android:
@@ -174,7 +174,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           path: dist
-          name: dist
+          name: ${{ env.ARCHIVE_NAME }}
 
   # -----
   linux:
@@ -232,7 +232,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           path: dist
-          name: dist
+          name: ${{ env.ARCHIVE_NAME }}
 
   # -----
   windows:
@@ -288,7 +288,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           path: dist
-          name: dist
+          name: ${{ env.ARCHIVE_NAME }}
 
   # -----
   macos:
@@ -334,7 +334,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           path: dist
-          name: dist
+          name: ${{ env.ARCHIVE_NAME }}
 
   # Create a Github release and upload the binary libs that we just built.
   # There should be a release and debug build for each platform (win32, win64, MacOS64, Linux64),
