@@ -255,7 +255,7 @@ jobs:
             archive-name: windows-x86_64-gnu
             toolchain: stable-gnu
     env:
-      TARGET: ${{ matrix.taget }}
+      TARGET: ${{ matrix.target }}
       ARCHIVE_NAME: wgpu-${{ matrix.archive-name }}
     steps:
       # Common part (same for each build)
