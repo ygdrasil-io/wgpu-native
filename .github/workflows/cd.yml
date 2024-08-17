@@ -275,12 +275,6 @@ jobs:
         with:
           key: build-${{ env.TARGET }}-${{ env.CACHE_SUFFIX }}
       # Build
-      - name: Install llvm
-        run: |
-          set -x
-          choco install -y llvm
-          echo "LIBCLANG_PATH=C:\Program Files\LLVM\lib" >> $GITHUB_ENV
-        shell: bash
       - name: Build
         run: make package
         shell: bash
