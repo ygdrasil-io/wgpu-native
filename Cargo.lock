@@ -1112,7 +1112,6 @@ version = "0.0.0"
 dependencies = [
  "bindgen",
  "bitflags 2.9.0",
- "js-sys",
  "log",
  "naga",
  "parking_lot",
